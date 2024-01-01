@@ -25,16 +25,8 @@ Gem::Specification.new do |spec|
   end
   spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib", "ext"]
+  spec.require_paths = %w[lib ext]
   spec.extensions = ["ext/perfetto/extconf.rb"]
-
-  spec.add_development_dependency "minitest", "~> 5.16"
-  spec.add_development_dependency "rake", "~> 13.0"
-  spec.add_development_dependency "rake-compiler", "~> 1.1"
-  spec.add_development_dependency "rubocop", "~> 1.21"
-  spec.add_development_dependency "rubocop-rake", "~> 0.5"
-  spec.add_development_dependency "rubocop-minitest", "~> 0.34"
-
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html

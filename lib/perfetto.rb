@@ -3,8 +3,7 @@
 require_relative "perfetto/version"
 
 # Native extension
-require_relative "perfetto/perfetto"
+require_relative "perfetto/perfetto_native"
 
-module Perfetto
-  class Error < StandardError; end
-end
+# Ruby wrapper
+require_relative "perfetto/perfetto"

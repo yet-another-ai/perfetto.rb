@@ -2,10 +2,6 @@ AllCops:
   TargetRubyVersion: 3.3
   NewCops: enable
 
-require:
-  - rubocop-rake
-  - rubocop-minitest
-
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: double_quotes
@@ -16,3 +12,7 @@ Style/StringLiteralsInInterpolation:
 
 Layout/LineLength:
   Max: 120
+
+require:
+  - rubocop-rake
+  - rubocop-minitest

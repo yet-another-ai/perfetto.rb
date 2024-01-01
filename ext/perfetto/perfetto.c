@@ -75,7 +75,7 @@ static VALUE rb_perfetto_trace_counter(VALUE self, VALUE category, VALUE name, V
     }
 }
 
-void Init_perfetto(void)
+void Init_perfetto_native(void)
 {
     rb_mPerfetto = rb_define_module("Perfetto");
 
