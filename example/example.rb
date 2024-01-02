@@ -1,12 +1,6 @@
-# Perfetto
+# frozen_string_literal: true
 
-## Visualization
-
-https://ui.perfetto.dev/
-
-# Usage
-
-```ruby
+# rubocop:disable Naming/MethodParameterName
 
 require "perfetto"
 
@@ -66,6 +60,5 @@ f.bar(1, 2, c: 3) do |n|
 end
 
 Perfetto.stop_tracing "example.pftrace"
-```
 
-![example](./example/example.png)
+# rubocop:enable Naming/MethodParameterName
