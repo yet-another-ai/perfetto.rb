@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # rubocop:disable Naming/MethodParameterName
+# rubocop:disable Style/Documentation
 
 require "perfetto"
 
@@ -62,3 +63,4 @@ end
 Perfetto.stop_tracing "example.pftrace"
 
 # rubocop:enable Naming/MethodParameterName
+# rubocop:enable Style/Documentation

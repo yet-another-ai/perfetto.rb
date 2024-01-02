@@ -30,6 +30,11 @@ class Fixture
     yield d
   end
 
+  def func_returning_value
+    puts "func_returning_value"
+    "value"
+  end
+
   include Perfetto::Interceptor
   pftrace_all
 end
@@ -75,5 +80,10 @@ class TestInterceptor < Minitest::Test
       end
     end
     Perfetto.stop_tracing "test_func_with_block_and_args.pftrace"
+  end
+
+  def test_that_func_returning_value_works
+    assert_equal "value", @fixture.func_returning_value
+    Perfetto.stop_tracing "test_func_returning_value.pftrace"
   end
 end

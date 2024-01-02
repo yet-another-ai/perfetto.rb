@@ -15,8 +15,9 @@ module Perfetto
           alias_method "pftrace_#{method_name}", method_name
           define_method(method_name) do |*args, **kwargs, &block|
             Perfetto.trace_event_begin self.class.name, method_name.to_s
-            original_method.bind(self).call(*args, **kwargs, &block)
+            ret = original_method.bind(self).call(*args, **kwargs, &block)
             Perfetto.trace_event_end self.class.name
+            ret
           end
         end
 
