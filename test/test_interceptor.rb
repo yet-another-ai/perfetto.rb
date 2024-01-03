@@ -35,6 +35,13 @@ class Fixture
     "value"
   end
 
+  class DummyError < StandardError; end
+
+  def func_raising_exception
+    puts "func_raising_exception"
+    raise DummyError
+  end
+
   include Perfetto::Interceptor
   pftrace_all
 end
@@ -85,5 +92,12 @@ class TestInterceptor < Minitest::Test
   def test_that_func_returning_value_works
     assert_equal "value", @fixture.func_returning_value
     Perfetto.stop_tracing "test_func_returning_value.pftrace"
+  end
+
+  def test_that_func_raising_exception_works
+    assert_raises(Fixture::DummyError) do
+      @fixture.func_raising_exception
+    end
+    Perfetto.stop_tracing "test_func_raising_exception.pftrace"
   end
 end
