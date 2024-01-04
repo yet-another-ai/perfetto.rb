@@ -4,6 +4,9 @@ require "test_helper"
 
 # rubocop:disable Naming/MethodParameterName
 class Fixture
+  include Perfetto::Interceptor
+  perfetto_trace_all
+
   def func
     puts "func"
   end
@@ -42,14 +45,40 @@ class Fixture
     raise DummyError
   end
 
-  include Perfetto::Interceptor
-  pftrace_all
+  def self.class_func
+    puts "class_func"
+  end
 end
+
+class Fixture2 < Fixture
+  def func2
+    puts "func2"
+    func
+  end
+end
+
+class Fixture3 < Fixture2
+  def func
+    puts "overridden func"
+  end
+end
+
+class Fixture4
+  include Perfetto::Interceptor
+  perfetto_trace_all
+  define_method(:func) do
+    puts "dynamic func"
+  end
+end
+
 # rubocop:enable Naming/MethodParameterName
 
 class TestInterceptor < Minitest::Test
   def setup
     @fixture = Fixture.new
+    @fixture2 = Fixture2.new
+    @fixture3 = Fixture3.new
+    @fixture4 = Fixture4.new
     Perfetto.start_tracing
   end
 
@@ -99,5 +128,33 @@ class TestInterceptor < Minitest::Test
       @fixture.func_raising_exception
     end
     Perfetto.stop_tracing "test_func_raising_exception.pftrace"
+  end
+
+  def test_that_class_func_works
+    10.times do
+      Fixture.class_func
+    end
+    Perfetto.stop_tracing "test_class_func.pftrace"
+  end
+
+  def test_that_inherited_func_works
+    10.times do
+      @fixture2.func2
+    end
+    Perfetto.stop_tracing "test_inherited_func.pftrace"
+  end
+
+  def test_that_overridden_func_works
+    10.times do
+      @fixture3.func
+    end
+    Perfetto.stop_tracing "test_overridden_func.pftrace"
+  end
+
+  def test_that_dynamic_func_works
+    10.times do
+      @fixture4.func
+    end
+    Perfetto.stop_tracing "test_dynamic_func.pftrace"
   end
 end

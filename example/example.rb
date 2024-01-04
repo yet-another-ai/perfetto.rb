@@ -3,7 +3,7 @@
 # rubocop:disable Naming/MethodParameterName
 # rubocop:disable Style/Documentation
 
-require "perfetto"
+require_relative "../lib/perfetto"
 
 Perfetto.setup enable_tracing: true
 
@@ -39,6 +39,10 @@ Perfetto.trace_event_instant_with_debug_info "cpu_work", "example_instant2", "ke
 sleep 0.1
 
 class Foo
+  # Intercept instance methods
+  include Perfetto::Interceptor
+  perfetto_trace_all
+
   def bar(a, b = 1, c: 2)
     yield(a + b + c)
   end
@@ -48,15 +52,26 @@ class Foo
     sleep 0.1
   end
 
-  # Intercept instance methods
-  include Perfetto::Interceptor
-  pftrace_all
+  def self.buf
+    puts "buf"
+    sleep 0.1
+  end
+end
+
+class Bar < Foo
+  def say
+    puts "hello"
+    sleep 0.1
+  end
 end
 
 f = Foo.new
+b = Bar.new
 f.bar(1, 2, c: 3) do |n|
   n.times do |x|
     f.baz x + n
+    Foo.buf
+    b.say
   end
 end
 
