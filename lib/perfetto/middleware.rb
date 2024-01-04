@@ -27,9 +27,11 @@ module Perfetto
     # rubocop:enable Metrics/MethodLength
 
     def call(env)
-      @app.call(env) unless Perfetto::Configure.enable_tracing
-
-      perfetto_traced_call(env)
+      if Perfetto::Configure.enable_tracing
+        perfetto_traced_call(env)
+      else
+        @app.call(env)
+      end
     end
   end
 end
