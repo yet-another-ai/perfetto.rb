@@ -59,9 +59,16 @@ class Foo
 end
 
 class Bar < Foo
+  def self.buf2
+    puts "buf2"
+    sleep 0.1
+  end
+
   def say
     puts "hello"
     sleep 0.1
+    Bar.buf2
+    Foo.buf
   end
 end
 

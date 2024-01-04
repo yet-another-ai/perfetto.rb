@@ -55,6 +55,10 @@ class Fixture2 < Fixture
     puts "func2"
     func
   end
+
+  def self.class_func
+    puts "class_func2"
+  end
 end
 
 class Fixture3 < Fixture2
@@ -156,5 +160,12 @@ class TestInterceptor < Minitest::Test
       @fixture4.func
     end
     Perfetto.stop_tracing "test_dynamic_func.pftrace"
+  end
+
+  def test_that_overridden_class_func_works
+    10.times do
+      Fixture2.class_func
+    end
+    Perfetto.stop_tracing "test_overridden_class_func.pftrace"
   end
 end

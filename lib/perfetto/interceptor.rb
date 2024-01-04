@@ -62,27 +62,31 @@ module Perfetto
 
         perfetto_traced_class_methods << method_name
 
-        original_method = method(method_name)
+        original_method = singleton_class.instance_method(method_name)
         singleton_class.send(:alias_method, "_pfc_#{method_name}", method_name)
 
         define_singleton_method(method_name) do |*args, **kwargs, &block|
           category = name
           task_name = "#{name}.#{method_name}"
           Perfetto.trace_event_begin category, task_name
-          original_method.call(*args, **kwargs, &block)
+          original_method.bind(self).call(*args, **kwargs, &block)
         ensure
           Perfetto.trace_event_end name
         end
       end
 
       def perfetto_trace_all
+        original_method_added = singleton_class.instance_method(:method_added)
         define_singleton_method(:method_added) do |method_name|
+          original_method_added.bind(self).call(method_name)
           return if perfetto_traced_instance_method?(method_name)
 
           perfetto_trace_instance_method method_name
         end
 
+        original_singleton_method_added = singleton_class.instance_method(:singleton_method_added)
         define_singleton_method(:singleton_method_added) do |method_name|
+          original_singleton_method_added.bind(self).call(method_name)
           return if perfetto_traced_class_method?(method_name)
 
           perfetto_trace_class_method method_name
