@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Metrics/MethodLength
+
 module Perfetto
   # To intercept method calls in other classes
   module Interceptor
@@ -39,7 +42,6 @@ module Perfetto
       def perfetto_trace_instance_method(method_name)
         return if method_name.to_s.start_with? "_pfi_"
 
-        # warn "Perfetto[InstanceMethod]: #{name}##{method_name}"
         perfetto_traced_instance_methods << method_name
 
         original_method = instance_method(method_name)
@@ -56,17 +58,16 @@ module Perfetto
       end
 
       def perfetto_trace_class_method(method_name)
-        return if method_name.to_s == "singleton_method_added" || method_name.to_s.start_with?("_pfc_")
+        return if method_name.to_s.start_with? "_pfc_"
 
-        # warn "Perfetto[ClassMethod]: #{name}.#{method_name}"
         perfetto_traced_class_methods << method_name
 
         original_method = method(method_name)
         singleton_class.send(:alias_method, "_pfc_#{method_name}", method_name)
 
         define_singleton_method(method_name) do |*args, **kwargs, &block|
-          category = self.name
-          task_name = "#{self.name}.#{method_name}"
+          category = name
+          task_name = "#{name}.#{method_name}"
           Perfetto.trace_event_begin category, task_name
           original_method.call(*args, **kwargs, &block)
         ensure
@@ -106,3 +107,5 @@ module Perfetto
     end
   end
 end
+# rubocop:enable Metrics/AbcSize
+# rubocop:enable Metrics/MethodLength
