@@ -32,7 +32,7 @@ module Perfetto
   else
     # Stub methods
     def self.start_tracing; end
-    def self.stop_tracing(_trace_file_name); end
+    def self.stop_tracing(trace_file_name = nil); end
     def self.trace_event_begin(_class_name, _method_name); end
     def self.trace_event_end(_class_name); end
     def self.trace_counter(_class_name, _counter_name, _counter_value); end
