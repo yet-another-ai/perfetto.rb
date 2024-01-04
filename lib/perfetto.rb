@@ -1,9 +1,14 @@
 # frozen_string_literal: true
 
+require "json"
+
 require_relative "perfetto/version"
 
 require_relative "perfetto/core_ext/configurable"
 require_relative "perfetto/configure"
+
+# Rack middleware
+require_relative "perfetto/middleware"
 
 # To minimize the overhead of tracing at runtime
 # we determine whether to enable instrumentations
@@ -20,7 +25,5 @@ module Perfetto
     require_relative "perfetto/perfetto"
     # Instrumentation Helper
     require_relative "perfetto/interceptor"
-    # Rack middleware
-    require_relative "perfetto/middleware"
   end
 end

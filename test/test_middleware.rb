@@ -8,10 +8,8 @@ require "sinatra/base"
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 require "perfetto"
 
-Perfetto.setup enable_tracing: true
-
 class TestServer < Sinatra::Base
-  use Perfetto::Middleware
+  use Perfetto::Middleware, env_proc: ->(env) { env.to_json }
 
   get "/" do
     "Hello World"
@@ -22,6 +20,7 @@ class TestMiddleware < Minitest::Test
   include Rack::Test::Methods
 
   def setup
+    Perfetto.setup enable_tracing: true
     Perfetto.start_tracing
   end
 

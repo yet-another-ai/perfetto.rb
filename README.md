@@ -94,16 +94,15 @@ Perfetto.stop_tracing "example.pftrace"
 require "sinatra/base"
 require "perfetto"
 
-Perfetto.setup enable_tracing: true
-
 class Server < Sinatra::Base
-  use Perfetto::Middleware
+  use Perfetto::Middleware, env_proc: ->(env) { env.to_json }
 
   get "/" do
     "Hello World"
   end
 end
 
+Perfetto.setup enable_tracing: true
 Perfetto.start_tracing
 Server.run!
 Perfetto.stop_tracing "middleware.pftrace"
