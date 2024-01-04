@@ -46,7 +46,9 @@ module Perfetto
         alias_method "_pfi_#{method_name}", method_name
 
         define_method(method_name) do |*args, **kwargs, &block|
-          Perfetto.trace_event_begin self.class.name, method_name.to_s
+          category = self.class.name
+          task_name = "#{self.class.name}##{method_name}"
+          Perfetto.trace_event_begin category, task_name
           original_method.bind(self).call(*args, **kwargs, &block)
         ensure
           Perfetto.trace_event_end self.class.name
@@ -63,7 +65,9 @@ module Perfetto
         singleton_class.send(:alias_method, "_pfc_#{method_name}", method_name)
 
         define_singleton_method(method_name) do |*args, **kwargs, &block|
-          Perfetto.trace_event_begin name, method_name.to_s
+          category = self.name
+          task_name = "#{self.name}.#{method_name}"
+          Perfetto.trace_event_begin category, task_name
           original_method.call(*args, **kwargs, &block)
         ensure
           Perfetto.trace_event_end name
