@@ -20,5 +20,7 @@ module Perfetto
     require_relative "perfetto/perfetto"
     # Instrumentation Helper
     require_relative "perfetto/interceptor"
+    # Rack middleware
+    require_relative "perfetto/middleware"
   end
 end

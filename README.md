@@ -4,7 +4,9 @@
 
 https://ui.perfetto.dev/
 
-# Usage
+## Usage
+
+### Basic
 
 ```ruby
 require "perfetto"
@@ -83,3 +85,26 @@ Perfetto.stop_tracing "example.pftrace"
 ```
 
 ![example](./example/example.png)
+
+### Rack Middleware
+
+```ruby
+# frozen_string_literal: true
+
+require "sinatra/base"
+require "perfetto"
+
+Perfetto.setup enable_tracing: true
+
+class Server < Sinatra::Base
+  use Perfetto::Middleware
+
+  get "/" do
+    "Hello World"
+  end
+end
+
+Perfetto.start_tracing
+Server.run!
+Perfetto.stop_tracing "middleware.pftrace"
+```

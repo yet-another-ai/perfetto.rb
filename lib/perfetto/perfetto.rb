@@ -13,7 +13,7 @@ module Perfetto
       start_tracing_native Configure.buffer_size_kb
     end
 
-    def self.stop_tracing(trace_file_name = "#{Time.now.strftime("%Y%m%d%H%M%S")}.pftrace")
+    def self.stop_tracing(trace_file_name = "#{Time.now.strftime("%Y%m%d-%H-%M-%S")}.pftrace")
       stop_tracing_native trace_file_name
     end
 
