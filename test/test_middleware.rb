@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
+require "test_helper"
 require "rack/test"
-require "minitest/autorun"
-
 require "sinatra/base"
-
-$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
-require "perfetto"
 
 class TestServer < Sinatra::Base
   use Perfetto::Middleware, env_proc: ->(env) { env.to_json }
@@ -20,7 +16,6 @@ class TestMiddleware < Minitest::Test
   include Rack::Test::Methods
 
   def setup
-    Perfetto.setup enable_tracing: true
     Perfetto.start_tracing
   end
 

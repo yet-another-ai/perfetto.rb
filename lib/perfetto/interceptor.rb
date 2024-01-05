@@ -7,7 +7,7 @@ module Perfetto
   # To intercept method calls in other classes
   module Interceptor
     def self.included(base)
-      if Perfetto::Configure.enable_tracing
+      if Perfetto::Configure.enable_tracing?
         base.extend ImplMethods
       else
         base.extend StubMethods

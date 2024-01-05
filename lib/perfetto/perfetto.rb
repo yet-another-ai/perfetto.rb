@@ -7,7 +7,7 @@ module Perfetto
     alias stop_tracing_native stop_tracing
   end
 
-  if Perfetto::Configure.enable_tracing
+  if Perfetto::Configure.enable_tracing?
     # Default arguments implemented in this wrapper
     def self.start_tracing
       start_tracing_native Configure.buffer_size_kb
