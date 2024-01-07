@@ -67,7 +67,7 @@ module Perfetto
 
         define_singleton_method(method_name) do |*args, **kwargs, &block|
           category = name
-          task_name = "#{name}.#{method_name}"
+          task_name = "#{name}::#{method_name}"
           Perfetto.trace_event_begin category, task_name
           original_method.bind(self).call(*args, **kwargs, &block)
         ensure
