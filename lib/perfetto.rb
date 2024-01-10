@@ -19,8 +19,6 @@ module Perfetto
     Configure.enable_tracing = enable_tracing unless enable_tracing.nil?
     Configure.buffer_size_kb = buffer_size_kb unless buffer_size_kb.nil?
 
-    warn "Perfetto Tracing is #{Configure.enable_tracing? ? "enabled" : "disabled"}"
-
     # Native extension
     require_relative "perfetto/perfetto_native"
     # Ruby wrapper
