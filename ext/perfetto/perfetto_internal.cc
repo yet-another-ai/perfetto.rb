@@ -4,8 +4,10 @@
 #include <atomic>
 #include <mutex>
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include <string>
+#include <thread>
 
 #include "perfetto_internal.h"
 
@@ -143,6 +145,55 @@ extern "C"
         perfetto::DynamicCategory dynamic_category(category);
         perfetto::DynamicString dynamic_name(name);
         TRACE_EVENT_BEGIN(dynamic_category, dynamic_name,
+                          debug_info_key, debug_info_value);
+    }
+
+    /* Ruby Fiber */
+    static inline perfetto::Track fiber_track(const int64_t fiber_object_id)
+    {
+        auto tid = std::this_thread::get_id();
+        std::stringstream ss;
+        ss << "T(" << tid << ")F(" << fiber_object_id << ")"; // T(thread_id)F(fiber_id)
+        perfetto::Track fiber_track(fiber_object_id);
+        auto track_desc = fiber_track.Serialize();
+        track_desc.set_name(ss.str());
+        perfetto::TrackEvent::SetTrackDescriptor(fiber_track, track_desc);
+        return fiber_track;
+    }
+
+    void perfetto_fiber_trace_event_begin(const char *const category, const char *const name, const int64_t fiber_object_id)
+    {
+        perfetto::DynamicCategory dynamic_category(category);
+        perfetto::DynamicString dynamic_name(name);
+        TRACE_EVENT_BEGIN(dynamic_category, dynamic_name, fiber_track(fiber_object_id));
+    }
+
+    void perfetto_fiber_trace_event_end(const char *const category, const int64_t fiber_object_id)
+    {
+        perfetto::DynamicCategory dynamic_category(category);
+        TRACE_EVENT_END(dynamic_category, fiber_track(fiber_object_id));
+    }
+
+    void perfetto_fiber_trace_event_instant(const char *const category, const char *const name, const int64_t fiber_object_id)
+    {
+        perfetto::DynamicCategory dynamic_category(category);
+        perfetto::DynamicString dynamic_name(name);
+        TRACE_EVENT_INSTANT(dynamic_category, dynamic_name, fiber_track(fiber_object_id));
+    }
+
+    void perfetto_fiber_trace_event_instant_with_debug_info(const char *const category, const char *const name, const char *const debug_info_key, const char *const debug_info_value, const int64_t fiber_object_id)
+    {
+        perfetto::DynamicCategory dynamic_category(category);
+        perfetto::DynamicString dynamic_name(name);
+        TRACE_EVENT_INSTANT(dynamic_category, dynamic_name, fiber_track(fiber_object_id),
+                            debug_info_key, debug_info_value);
+    }
+
+    void perfetto_fiber_trace_event_begin_with_debug_info(const char *const category, const char *const name, const char *const debug_info_key, const char *const debug_info_value, const int64_t fiber_object_id)
+    {
+        perfetto::DynamicCategory dynamic_category(category);
+        perfetto::DynamicString dynamic_name(name);
+        TRACE_EVENT_BEGIN(dynamic_category, dynamic_name, fiber_track(fiber_object_id),
                           debug_info_key, debug_info_value);
     }
 

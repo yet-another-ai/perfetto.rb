@@ -4,6 +4,7 @@
 
 /* Modules */
 static VALUE rb_mPerfetto;
+static VALUE rb_mFiber;
 
 /* Methods */
 
@@ -75,9 +76,49 @@ static VALUE rb_perfetto_trace_counter(VALUE self, VALUE category, VALUE name, V
     }
 }
 
+/* Ruby Fiber */
+static int current_fiber_object_id(void)
+{
+    VALUE fiber = rb_funcall(rb_mFiber, rb_intern("current"), 0);
+    VALUE object_id = rb_funcall(fiber, rb_intern("object_id"), 0);
+    return NUM2LL(object_id);
+}
+
+static VALUE rb_perfetto_fiber_trace_event_begin(VALUE self, VALUE category, VALUE name)
+{
+    perfetto_fiber_trace_event_begin(StringValuePtr(category), StringValuePtr(name), current_fiber_object_id());
+    return Qnil;
+}
+
+static VALUE rb_perfetto_fiber_trace_event_end(VALUE self, VALUE category)
+{
+    perfetto_fiber_trace_event_end(StringValuePtr(category), current_fiber_object_id());
+    return Qnil;
+}
+
+static VALUE rb_perfetto_fiber_trace_event_instant(VALUE self, VALUE category, VALUE name)
+{
+    perfetto_fiber_trace_event_instant(StringValuePtr(category), StringValuePtr(name), current_fiber_object_id());
+    return Qnil;
+}
+
+static VALUE rb_perfetto_fiber_trace_event_instant_with_debug_info(VALUE self, VALUE category, VALUE name, VALUE debug_info_key, VALUE debug_info_value)
+{
+    perfetto_fiber_trace_event_instant_with_debug_info(StringValuePtr(category), StringValuePtr(name), StringValuePtr(debug_info_key), StringValuePtr(debug_info_value), current_fiber_object_id());
+    return Qnil;
+}
+
+static VALUE rb_perfetto_fiber_trace_event_begin_with_debug_info(VALUE self, VALUE category, VALUE name, VALUE debug_info_key, VALUE debug_info_value)
+{
+    perfetto_fiber_trace_event_begin_with_debug_info(StringValuePtr(category), StringValuePtr(name), StringValuePtr(debug_info_key), StringValuePtr(debug_info_value), current_fiber_object_id());
+    return Qnil;
+}
+
+
 void Init_perfetto_native(void)
 {
     rb_mPerfetto = rb_define_module("Perfetto");
+    rb_mFiber = rb_define_class("Fiber", rb_cObject);
 
     rb_define_module_function(rb_mPerfetto, "start_tracing", rb_perfetto_start_tracing, 1);
     rb_define_module_function(rb_mPerfetto, "stop_tracing", rb_perfetto_stop_tracing, 1);
@@ -89,4 +130,10 @@ void Init_perfetto_native(void)
     rb_define_module_function(rb_mPerfetto, "trace_event_instant", rb_perfetto_trace_event_instant, 2);
     rb_define_module_function(rb_mPerfetto, "trace_event_instant_with_debug_info", rb_perfetto_trace_event_instant_with_debug_info, 4);
     rb_define_module_function(rb_mPerfetto, "trace_event_begin_with_debug_info", rb_perfetto_trace_event_begin_with_debug_info, 4);
+
+    rb_define_module_function(rb_mPerfetto, "fiber_trace_event_begin", rb_perfetto_fiber_trace_event_begin, 2);
+    rb_define_module_function(rb_mPerfetto, "fiber_trace_event_end", rb_perfetto_fiber_trace_event_end, 1);
+    rb_define_module_function(rb_mPerfetto, "fiber_trace_event_instant", rb_perfetto_fiber_trace_event_instant, 2);
+    rb_define_module_function(rb_mPerfetto, "fiber_trace_event_instant_with_debug_info", rb_perfetto_fiber_trace_event_instant_with_debug_info, 4);
+    rb_define_module_function(rb_mPerfetto, "fiber_trace_event_begin_with_debug_info", rb_perfetto_fiber_trace_event_begin_with_debug_info, 4);
 }

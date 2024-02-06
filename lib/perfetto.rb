@@ -15,8 +15,9 @@ require_relative "perfetto/middleware"
 # at the first call to 'setup' method instead of
 # every call to bussiness logics being traced.
 module Perfetto
-  def self.setup(enable_tracing: nil, buffer_size_kb: nil)
+  def self.setup(enable_tracing: nil, enable_fiber: nil, buffer_size_kb: nil)
     Configure.enable_tracing = enable_tracing unless enable_tracing.nil?
+    Configure.enable_fiber = enable_fiber unless enable_fiber.nil?
     Configure.buffer_size_kb = buffer_size_kb unless buffer_size_kb.nil?
 
     # Native extension

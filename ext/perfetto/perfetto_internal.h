@@ -29,6 +29,18 @@ extern "C"
     void perfetto_trace_event_instant_with_debug_info(const char *const category, const char *const name, const char *const debug_info_key, const char *const debug_info_value);
 
     void perfetto_trace_event_begin_with_debug_info(const char *const category, const char *const name, const char *const debug_info_key, const char *const debug_info_value);
+
+    /* Ruby Fiber */
+    void perfetto_fiber_trace_event_begin(const char *const category, const char *const name, const int64_t fiber_object_id);
+
+    void perfetto_fiber_trace_event_end(const char *const category, const int64_t fiber_object_id);
+
+    void perfetto_fiber_trace_event_instant(const char *const category, const char *const name, const int64_t fiber_object_id);
+
+    void perfetto_fiber_trace_event_instant_with_debug_info(const char *const category, const char *const name, const char *const debug_info_key, const char *const debug_info_value, const int64_t fiber_object_id);
+
+    void perfetto_fiber_trace_event_begin_with_debug_info(const char *const category, const char *const name, const char *const debug_info_key, const char *const debug_info_value, const int64_t fiber_object_id);
+
 #ifdef __cplusplus
 }
 #endif
