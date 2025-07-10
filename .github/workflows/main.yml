@@ -23,5 +23,7 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
+    - name: Compile extensions
+      run: bundle exec rake compile
     - name: Run the default task
       run: bundle exec rake
