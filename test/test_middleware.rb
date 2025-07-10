@@ -5,7 +5,7 @@ require "rack/test"
 require "sinatra/base"
 
 class TestServer < Sinatra::Base
-  use Perfetto::Middleware, env_proc: ->(env) { env.to_json }
+  use Perfetto::Middleware, env_proc: lambda(&:to_json)
 
   get "/" do
     "Hello World"
